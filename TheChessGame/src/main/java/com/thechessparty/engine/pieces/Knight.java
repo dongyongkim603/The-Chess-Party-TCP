@@ -38,29 +38,24 @@ public class Knight extends Piece {
 
         for (final int current : KNIGHT_MOVES) {
 
-            //applying the offset to the position;
-            destination = getPosition() + current;
+            //if Knight Piece is near the edges of the board (literal edge cases)
+            if (isFirstColumn(getPosition(), current) || isSecondColumn(getPosition(), current) ||
+                    isSeventhColumn(getPosition(), current) || isEighthColumn(getPosition(), current)) {
+                continue;
+            }
 
-            if (BoardUtilites.isValidMove(destination)) {
-
-                //if Knight Piece is near the edges of the board (literal edge cases)
-                if (isFirstColumn(getPosition(), current) || isSecondColumn(getPosition(), current) ||
-                        isSeventhColumn(getPosition(), current) || isEighthColumn(getPosition(), current)) {
-                    continue;
-                }
-
-                final Tile destinationTile = board.getTile(current);
-
-                // if destination Tile is not occupied get NormalMove
-                if (!destinationTile.isTileOccupied()) {
-                    legalMoves.add(new NormalMove(board, this, destination));
+            final int candidateDestination = getPosition() + current;
+            // if destination Tile is not occupied get NormalMove
+            if (candidateDestination >= 0 && candidateDestination <= 63) {
+                final Piece destinationPiece = board.getPiece(candidateDestination);
+                if (destinationPiece == null) {
+                    legalMoves.add(new NormalMove(board, this, candidateDestination));
                 } else {
-                    final Piece occupyingPiece = destinationTile.getPiece();
-                    final Team team = occupyingPiece.getTeam();
+                    final Team team = destinationPiece.getTeam();
 
                     // if the Tile is occupied get AttackMove
                     if (getTeam() != team) {
-                        legalMoves.add(new AttackMove(board, this, destination, occupyingPiece));
+                        legalMoves.add(new AttackMove(board, this, candidateDestination, destinationPiece));
                     }
                 }
             }

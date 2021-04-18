@@ -3,6 +3,8 @@ package com.thechessparty.engine.board;
 import com.google.common.collect.ImmutableList;
 import com.thechessparty.engine.Team;
 import com.thechessparty.engine.moveset.Move;
+import com.thechessparty.engine.moveset.MoveFactory;
+import com.thechessparty.engine.moveset.NullMove;
 import com.thechessparty.engine.pieces.*;
 import com.thechessparty.engine.player.BlackPlayer;
 import com.thechessparty.engine.player.Player;
@@ -21,9 +23,12 @@ public class GameBoard {
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
     private final Player currentPlayer;
+    private final Map<Integer, Piece> boardConfiguration;
+    private final Move transitionMove;
 
     // constructor
-    private GameBoard(Builder builder) {
+    private GameBoard(final Builder builder) {
+        this.boardConfiguration = Collections.unmodifiableMap(builder.boardConfiguration);
         this.gameBoard = createBoard(builder);
         this.white = listBoardPieces(this.gameBoard, Team.WHITE);
         this.black = listBoardPieces(this.gameBoard, Team.BLACK);
@@ -34,13 +39,18 @@ public class GameBoard {
         this.whitePlayer = new WhitePlayer(this, whiteMoves, blackMoves);
         this.blackPlayer = new BlackPlayer(this, whiteMoves, blackMoves);
 
-        this.currentPlayer = builder.nextMove.nextPlayer(this.blackPlayer, this.whitePlayer);
+        this.currentPlayer = builder.nextTeam.nextPlayer(this.blackPlayer, this.whitePlayer);
+        if(builder.transitionMove != null ){
+            this.transitionMove = builder.transitionMove;
+        }else {
+            this.transitionMove = new NullMove();
+        }
     }
 
     //-------------- public methods ----------------------------
 
     public Tile getTile(final int coordinate) {
-        return null;
+        return gameBoard.get(coordinate);
     }
 
     /**
@@ -54,7 +64,9 @@ public class GameBoard {
         final List<Move> moves = new ArrayList<>();
 
         for (final Piece piece : pieces) {
-            //moves.addAll(piece.listLegalMoves(this));
+            if(piece instanceof Knight) {
+                moves.addAll(piece.listLegalMoves(this));
+            }
         }
         return ImmutableList.copyOf(moves);
     }
@@ -141,7 +153,7 @@ public class GameBoard {
         b.setPiece(whtPawn7);
 
         // The team to go first White as is chess standard
-        b.setNextMove(Team.WHITE);
+        b.setNextTeam(Team.WHITE);
 
         //returns the built board
         return b.build();
@@ -230,6 +242,10 @@ public class GameBoard {
         return this.currentPlayer;
     }
 
+    public Piece getPiece(final int coordinate) {
+        return this.boardConfiguration.get(coordinate);
+    }
+
 //---------------- nested class -------------------
 
     /**
@@ -239,7 +255,8 @@ public class GameBoard {
 
         // instance variables
         Map<Integer, Piece> boardConfiguration;
-        Team nextMove;
+        Team nextTeam;
+        Move transitionMove;
 
         // constructor
         public Builder() {
@@ -266,10 +283,16 @@ public class GameBoard {
          * @param team a Team object that will be the team to go next
          * @return this class of the builder
          */
-        public Builder setNextMove(final Team team) {
-            this.nextMove = team;
+        public Builder setNextTeam(final Team team) {
+            this.nextTeam = team;
             return this;
         }
+
+        public Builder setMoveTransition(final Move transitionMove) {
+            this.transitionMove = transitionMove;
+            return this;
+        }
+
 
         /**
          * standard builder pattern build method.

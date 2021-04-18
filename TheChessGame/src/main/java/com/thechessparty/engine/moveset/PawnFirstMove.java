@@ -46,7 +46,7 @@ public final class PawnFirstMove extends Move {
         //builder.setEnPassant(pawn);
 
         //set the next player as the adversary Team
-        builder.setNextMove(getBoard().getCurrentPlayer().getAdversary().getTeam());
+        builder.setNextTeam(getBoard().getCurrentPlayer().getAdversary().getTeam());
         return builder.build();
     }
 

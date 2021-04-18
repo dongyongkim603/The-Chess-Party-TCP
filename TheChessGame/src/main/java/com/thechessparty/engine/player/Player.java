@@ -93,9 +93,11 @@ public abstract class Player {
     }
 
     /**
+     * Allows the player to move one of their Pieces on the GameBoard by passing in a Move that has state data about the
+     * coordinates and the piece to be moved
      *
-     * @param m
-     * @return
+     * @param m a move that encapsulates the data involving movement
+     * @return a Transition that encapsulate the state of the GameBoard after a move
      */
     public Transition move(final Move m) {
 

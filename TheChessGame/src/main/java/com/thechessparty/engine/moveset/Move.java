@@ -9,15 +9,22 @@ public abstract class Move {
     final private GameBoard board;
     final private Piece movedPosition;
     final private int destination;
-
-    // class variable
-    final public static Move INVALID_MOVE = new InvalidMove();
+    final private boolean firstMove;
 
     //constructor
-    Move(final GameBoard board, final Piece piece, final int destination){
+    Move(final GameBoard board,
+         final int destinationCoordinate) {
+        this.board = board;
+        this.destination = destinationCoordinate;
+        this.movedPosition = null;
+        this.firstMove = false;
+    }
+
+    public Move(final GameBoard board, final Piece piece, final int destination){
         this.board = board;
         this.movedPosition = piece;
         this.destination = destination;
+        this.firstMove = movedPosition.isFirstMove();
     }
 
     //--------------- public methods -----------------------
@@ -51,7 +58,7 @@ public abstract class Move {
         builder.setPiece(this.movedPosition.movePiece(this));
 
         //sets the boards current player to the next player
-        builder.setNextMove(this.board.getCurrentPlayer().getAdversary().getTeam());
+        builder.setNextTeam(this.board.getCurrentPlayer().getAdversary().getTeam());
 
         return builder.build();
     }

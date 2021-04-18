@@ -4,6 +4,8 @@ import com.thechessparty.engine.board.GameBoard;
 
 public class MoveFactory {
 
+    private static final NullMove NULL_MOVE = new NullMove();
+
     /**
      * Factory design pattern we use here to help with the creation of an unknown number of sub-class Move objects
      */
@@ -25,7 +27,10 @@ public class MoveFactory {
                 return m;
             }
         }
-        return null;
+        return NULL_MOVE;
     }
 
+    public static Move getNullMove() {
+        return new NullMove();
+    }
 }
