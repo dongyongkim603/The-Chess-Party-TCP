@@ -4,7 +4,6 @@ import com.thechessparty.engine.board.GameBoard;
 import com.thechessparty.engine.board.Tile;
 import com.thechessparty.engine.moveset.Move;
 import com.thechessparty.engine.moveset.MoveFactory;
-import com.thechessparty.engine.moveset.NormalMove;
 import com.thechessparty.engine.pieces.*;
 import com.thechessparty.engine.player.BlackPlayer;
 import com.thechessparty.engine.player.Player;
@@ -82,9 +81,12 @@ public class GameManager implements Runnable {
 
         //while(board.getAllMoves() != 0){
         while (true) {
+            w = board.getWhitePlayer();
+            b= board.getBlackPlayer();
+
             System.out.println(board);
             int start = 0, destination = 0;
-
+            
             if (board.getCurrentPlayer().getTeam().equals(Team.WHITE)) {
                 System.out.println("WHITE PLAYER: enter coordinate for move");
                 start = scan.nextInt();
@@ -93,9 +95,10 @@ public class GameManager implements Runnable {
             } else {
                 System.out.println("BLACK PLAYER: enter coordinate for move");
                 start = scan.nextInt();
-                System.out.println("WHITE PLAYER: enter the Piece to move");
+                System.out.println("BLACK PLAYER: enter the Piece to move");
                 destination = scan.nextInt();
             }
+
             Tile tile = board.getTile(start);
             Piece piece = tile.getPiece();
             System.out.println("the " + current.getTeam() + " has selected " + piece.toString() + " going to " + destination);
@@ -109,8 +112,11 @@ public class GameManager implements Runnable {
                 current = board.getCurrentPlayer().getAdversary();
             }
 
-            // checks for stalemate
-            if (w.isDraw() && b.isDraw()) {
+            if(w.getIsInCheck()){
+                System.out.println("white players king is in check");
+            } else if(b.getIsInCheck()){
+                System.out.println("black players king is in check");
+            } else if (w.isDraw() && b.isDraw()) {
                 System.out.println("stalemate");
                 break;
             }

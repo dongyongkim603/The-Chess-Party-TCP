@@ -1,15 +1,24 @@
 package com.thechessparty.engine.pieces;
 
+import com.google.common.collect.ImmutableList;
 import com.thechessparty.engine.Team;
+import com.thechessparty.engine.board.BoardUtilites;
 import com.thechessparty.engine.board.GameBoard;
+import com.thechessparty.engine.board.Tile;
+import com.thechessparty.engine.moveset.AttackMove;
 import com.thechessparty.engine.moveset.Move;
+import com.thechessparty.engine.moveset.NormalMove;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Rook extends Piece{
-//class variables
+
+    //class variables
     // offsets relative to the Rook's position on the board
     private final static int[] ROOK_MOVES = {-8, -1, 1, 8};
+
+    //
     public Rook(int position, final Team team){
         super(PieceIdentifiers.ROOK, position,team);
     }
@@ -18,7 +27,7 @@ public class Rook extends Piece{
     public List<Move> listLegalMoves(final GameBoard board) {
        
         final List<Move> legalMoves = new ArrayList<>();
-       // return null;
+        // return null;
         for (final int current : ROOK_MOVES) {
             int destination = getPosition();
               while (BoardUtilites.isValidMove(destination)) {
@@ -29,7 +38,7 @@ public class Rook extends Piece{
                   destination += current;
                
                 if (BoardUtilites.isValidMove(destination)) {
-                   final Tile destinationTile = board.getTile(current);
+                   final Tile destinationTile = board.getTile(destination);
 
                 // if destination Tile is not occupied get NormalMove
                 if (!destinationTile.isTileOccupied()) {
@@ -48,7 +57,7 @@ public class Rook extends Piece{
         }
     }
 
-        return ImmutableList.copyOf(legalMoves);   
+        return ImmutableList.copyOf(legalMoves);
 }
 
 //----------- private helper methods ---------------------
