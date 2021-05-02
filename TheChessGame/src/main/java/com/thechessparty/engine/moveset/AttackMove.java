@@ -34,7 +34,7 @@ public class AttackMove extends Move{
 
     @Override
     public int hashCode(){
-        return this.attackedPiece.hashCode();
+        return this.attackedPiece.hashCode() + super.hashCode();
     }
 
     @Override
