@@ -2,6 +2,8 @@ package com.thechessparty.engine.board;
 
 public class BoardUtilites {
 
+    INSTANCE;
+
     //class constants
     public static final boolean[] FIRST_COLUMN = initializeColumn(0);
     public static final boolean[] SECOND_COLUMN = initializeColumn(1);
